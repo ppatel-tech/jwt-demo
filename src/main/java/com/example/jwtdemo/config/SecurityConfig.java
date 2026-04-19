@@ -2,9 +2,14 @@ package com.example.jwtdemo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.example.jwtdemo.filter.JwtFilter;
+@EnableMethodSecurity
 
 @Configuration
 public class SecurityConfig {
@@ -14,9 +19,10 @@ public class SecurityConfig {
         http
         .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll()
-            );
-
+            	.requestMatchers("/auth/**").permitAll()
+                .anyRequest().authenticated()
+            ).addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
+        
         return http.build();
     }
     
@@ -25,4 +31,8 @@ public class SecurityConfig {
     	return new BCryptPasswordEncoder();
     }
     
+    
+    
 }
+
+
