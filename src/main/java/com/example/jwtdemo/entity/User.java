@@ -1,6 +1,4 @@
 package com.example.jwtdemo.entity;
-
-
 import jakarta.persistence.*;
 
 @Entity
